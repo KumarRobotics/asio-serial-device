@@ -1,18 +1,18 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 2.6)
-PROJECT(asio_serial_device)
+cmake_minimum_required(VERSION 2.8.3)
+project(asio-serial-device)
 
-SET(CMAKE_BUILD_TYPE Release)
+find_package(catkin REQUIRED)
+find_package(Boost REQUIRED COMPONENTS thread system)
 
-INCLUDE_DIRECTORIES(include)
+include_directories(include ${catkin_INCLUDE_DIRS})
 
-ADD_LIBRARY(asio_serial_device SHARED src/ASIOSerialDevice.cc)
+catkin_package(
+    DEPENDS
+    CATKIN_DEPENDS # TODO
+    INCLUDE_DIRS include
+    LIBRARIES # TODO
+)
 
-FIND_PACKAGE(Boost COMPONENTS system thread REQUIRED)
-TARGET_LINK_LIBRARIES(asio_serial_device
-                                       ${Boost_SYSTEM_LIBRARY}
-                                       ${Boost_THREAD_LIBRARY})
+add_library(asio_serial_device src/ASIOSerialDevice.cc)
 
-SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
-SET(LIBRARY_OUTPUT_PATH ${CMAKE_CURRENT_SOURCE_DIR}/lib)
-
-INSTALL(TARGETS asio_serial_device DESTINATION lib)
+target_link_libraries(asio_serial_device ${Boost_SYSTEM_LIBRARY} ${Boost_THREAD_LIBRARY})
