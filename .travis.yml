@@ -5,7 +5,7 @@ compiler:
 notifications:
   email:
     recipients:
-      - quchao@seas.upenn.edu
+      - kartikmohta@gmail.com
 before_install: # Use this to prepare the system to install prerequisites or dependencies
   # Define some config vars
   - export ROS_DISTRO=hydro
@@ -17,7 +17,7 @@ before_install: # Use this to prepare the system to install prerequisites or dep
   - sudo apt-get update -qq
 install: # Use this to install any prerequisites or dependencies necessary to run your build
   - sudo apt-get update -qq
-  - sudo apt-get install -qq -y python-rosdep ros-$ROS_DISTRO-catkin
+  - sudo apt-get install -qq -y python-rosdep ros-$ROS_DISTRO-catkin libboost-thread-dev libboost-system-dev
     # Setup rosdep
   - sudo rosdep init
   - rosdep update
