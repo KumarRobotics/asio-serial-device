@@ -18,7 +18,7 @@ before_install: # Use this to prepare the system to install prerequisites or dep
 install: # Use this to install any prerequisites or dependencies necessary to run your build
   - sudo apt-get update -qq
   - sudo apt-get install -qq -y python-rosdep ros-$ROS_DISTRO-catkin libboost-thread-dev libboost-system-dev
-    # Setup rosdep
+  # Setup rosdep
   - sudo rosdep init
   - rosdep update
 before_script: # Use this to prepare your build for testing e.g. copy database configurations, environment variables, etc.
@@ -30,4 +30,5 @@ before_script: # Use this to prepare your build for testing e.g. copy database c
   - ln -s $CI_SOURCE_PATH . # Link the repo we are testing to the new workspace
   - cd ../
 script: # All commands must exit with code 0 on success. Anything else is considered failure.
+  - export ROS_PARALLEL_JOBS='-j4 -l4' # Limit parallel jobs
   - catkin_make
