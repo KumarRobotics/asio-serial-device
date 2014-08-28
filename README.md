@@ -1,4 +1,4 @@
-# asio-serial-device
+# asio_serial_device
 
 [![Build
-Status](https://travis-ci.org/KumarRobotics/asio-serial-device.svg?branch=master)](https://travis-ci.org/KumarRobotics/asio-serial-device)
+Status](https://travis-ci.org/KumarRobotics/asio_serial_device.svg?branch=master)](https://travis-ci.org/KumarRobotics/asio_serial_device)
