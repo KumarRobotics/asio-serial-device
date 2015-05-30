@@ -67,7 +67,7 @@ void ASIOSerialDevice::Open(const string &device_,
         {
           serial_port = new ba::serial_port(io_service, device);
         }
-      catch (std::exception e)
+      catch (const std::exception &e)
         {
           cerr << "Unable to open device: " << device << endl;
           throw;

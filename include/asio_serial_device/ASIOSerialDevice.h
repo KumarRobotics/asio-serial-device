@@ -18,8 +18,8 @@
   Nathan Michael, Aug. 2011
 */
 
-#ifndef __ASIOSERIALDEVICE__
-#define __ASIOSERIALDEVICE__
+#ifndef ASIOSERIALDEVICE_H
+#define ASIOSERIALDEVICE_H
 
 #include <deque>
 #include <iostream>
