@@ -83,6 +83,17 @@ void ASIOSerialDevice::Open(const string &device_,
       serial_port->set_option(csize);
       serial_port->set_option(flow);
       serial_port->set_option(stop);
+      {
+        // NOTE(Kartik): Wait for at least one char on serial port before
+        // returning from read. Sadly Boost doesn't provide any way to set this.
+        int fd = serial_port->native_handle();
+        struct termios tio;
+        tcgetattr(fd, &tio);
+        tio.c_cc[VTIME] = 0;
+        tio.c_cc[VMIN] = 1;
+        tcflush(fd, TCIFLUSH);
+        tcsetattr(fd, TCSANOW, &tio);
+      }
 
       open = true;
     }
@@ -129,7 +140,7 @@ void ASIOSerialDevice::ReadComplete(const boost::system::error_code& error,
   if (!error)
     {
       if (!read_callback.empty())
-        read_callback(const_cast<unsigned char *>(read_msg), bytes_transferred);
+        read_callback(read_msg, bytes_transferred);
       ReadStart();
     }
   else
@@ -217,5 +228,5 @@ void ASIOSerialDevice::Read()
     serial_port->read_some(ba::buffer(read_msg, MAX_READ_LENGTH));
 
   if (!read_callback.empty() && (bytes_transferred > 0))
-    read_callback(const_cast<unsigned char *>(read_msg), bytes_transferred);
+    read_callback(read_msg, bytes_transferred);
 }
