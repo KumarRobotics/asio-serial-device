@@ -31,7 +31,7 @@
 // Class version of example ASIO over serial with boost::asio:
 // http://groups.google.com/group/boost-list/browse_thread/thread/5cc7dcc7b90d41fc
 
-#define MAX_READ_LENGTH 512
+#define MAX_READ_LENGTH 16
 
 namespace ba = boost::asio;
 
