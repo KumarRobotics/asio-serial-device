@@ -20,6 +20,10 @@
 
 #include <asio_serial_device/ASIOSerialDevice.h>
 
+#if defined(__linux__)
+#include <linux/serial.h>
+#endif
+
 using namespace std;
 
 ASIOSerialDevice::ASIOSerialDevice()
@@ -83,17 +87,30 @@ void ASIOSerialDevice::Open(const string &device_,
       serial_port->set_option(csize);
       serial_port->set_option(flow);
       serial_port->set_option(stop);
-      {
-        // NOTE(Kartik): Wait for at least one char on serial port before
-        // returning from read. Sadly Boost doesn't provide any way to set this.
-        int fd = serial_port->native_handle();
-        struct termios tio;
-        tcgetattr(fd, &tio);
-        tio.c_cc[VTIME] = 0;
-        tio.c_cc[VMIN] = 1;
-        tcflush(fd, TCIFLUSH);
-        tcsetattr(fd, TCSANOW, &tio);
-      }
+
+#if defined(__linux__)
+      int fd = serial_port->native_handle();
+
+      // Enable low latency mode on Linux
+      struct serial_struct ser_info;
+      ioctl(fd, TIOCGSERIAL, &ser_info);
+      ser_info.flags |= ASYNC_LOW_LATENCY;
+      ioctl(fd, TIOCSSERIAL, &ser_info);
+
+#if BOOST_ASIO_VERSION < 101200
+      // This is done in Boost.ASIO, but until v1.12.0 (Boost 1.66) there was a
+      // bug which doesn't enable relevant code. Fixed by commit:
+      // https://github.com/boostorg/asio/commit/619cea4356
+      termios tio;
+      tcgetattr(fd, &tio);
+
+      // Set serial port to "raw" mode to prevent EOF exit.
+      cfmakeraw(&tio);
+
+      // Commit settings
+      tcsetattr(fd, TCSANOW, &tio);
+#endif
+#endif
 
       open = true;
     }
